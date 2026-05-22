@@ -15,6 +15,8 @@ public sealed class CollectorsOptions
     public ExchangeToggle Upbit { get; set; } = new();
 
     public ExchangeToggle Bithumb { get; set; } = new();
+
+    public ExchangeToggle Okx { get; set; } = new();
 }
 
 public sealed class ExchangeToggle
