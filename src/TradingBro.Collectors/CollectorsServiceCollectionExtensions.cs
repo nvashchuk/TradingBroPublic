@@ -5,6 +5,7 @@ using TradingBro.Collectors.Binance;
 using TradingBro.Collectors.Bithumb;
 using TradingBro.Collectors.Bybit;
 using TradingBro.Collectors.Common;
+using TradingBro.Collectors.Okx;
 using TradingBro.Collectors.Upbit;
 using TradingBro.Core.Abstractions;
 
@@ -46,6 +47,13 @@ public static class CollectorsServiceCollectionExtensions
             services.AddHttpClient(BithumbAnnouncementCollector.HttpClientName, ConfigureJsonClient);
             services.AddSingleton<IAnnouncementCollector, BithumbAnnouncementCollector>();
             services.AddSingleton<IAnnouncementParser, BithumbAnnouncementParser>();
+        }
+
+        if (opts.Okx.Enabled)
+        {
+            services.AddHttpClient(OkxAnnouncementCollector.HttpClientName, ConfigureJsonClient);
+            services.AddSingleton<IAnnouncementCollector, OkxAnnouncementCollector>();
+            services.AddSingleton<IAnnouncementParser, OkxAnnouncementParser>();
         }
 
         services.AddHostedService<AnnouncementPollingService>();

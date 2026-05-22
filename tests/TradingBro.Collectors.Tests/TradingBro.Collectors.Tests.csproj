@@ -14,10 +14,17 @@
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <Using Include="FluentAssertions" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TradingBro.Collectors\TradingBro.Collectors.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Okx\Fixtures\items.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
