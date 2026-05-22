@@ -17,6 +17,8 @@ public sealed class CollectorsOptions
     public ExchangeToggle Bithumb { get; set; } = new();
 
     public ExchangeToggle Okx { get; set; } = new();
+
+    public ExchangeToggle Gate { get; set; } = new();
 }
 
 public sealed class ExchangeToggle
