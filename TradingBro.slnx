@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TradingBro.Collectors/TradingBro.Collectors.csproj" />
+    <Project Path="src/TradingBro.Core/TradingBro.Core.csproj" />
+    <Project Path="src/TradingBro.Data/TradingBro.Data.csproj" />
+    <Project Path="src/TradingBro.Notifications/TradingBro.Notifications.csproj" />
+    <Project Path="src/TradingBro.Strategies/TradingBro.Strategies.csproj" />
+    <Project Path="src/TradingBro.Trading/TradingBro.Trading.csproj" />
+    <Project Path="src/TradingBro.Worker/TradingBro.Worker.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TradingBro.Collectors.Tests/TradingBro.Collectors.Tests.csproj" />
+    <Project Path="tests/TradingBro.Strategies.Tests/TradingBro.Strategies.Tests.csproj" />
+  </Folder>
+</Solution>

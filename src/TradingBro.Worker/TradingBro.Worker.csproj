@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <UserSecretsId>dotnet-TradingBro.Worker-0d5b8c4d-6eb5-4181-8feb-dfe05e4aefbd</UserSecretsId>
+    <RootNamespace>TradingBro.Worker</RootNamespace>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="Serilog" />
+    <PackageReference Include="Serilog.Extensions.Hosting" />
+    <PackageReference Include="Serilog.Settings.Configuration" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="Serilog.Sinks.File" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TradingBro.Core\TradingBro.Core.csproj" />
+    <ProjectReference Include="..\TradingBro.Data\TradingBro.Data.csproj" />
+    <ProjectReference Include="..\TradingBro.Collectors\TradingBro.Collectors.csproj" />
+    <ProjectReference Include="..\TradingBro.Strategies\TradingBro.Strategies.csproj" />
+    <ProjectReference Include="..\TradingBro.Trading\TradingBro.Trading.csproj" />
+    <ProjectReference Include="..\TradingBro.Notifications\TradingBro.Notifications.csproj" />
+  </ItemGroup>
+
+</Project>

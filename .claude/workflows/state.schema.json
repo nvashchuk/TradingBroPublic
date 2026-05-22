@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "state.schema.json",
+  "title": "TradingBro Multi-agent Run State",
+  "description": "Единственный источник правды о прогоне оркестратора. Сабагенты возвращают структурированный результат, оркестратор после каждого шага аппендит запись в steps[] и сохраняет файл — упавший прогон можно возобновить с диска.",
+  "type": "object",
+  "required": ["run_id", "workflow", "inputs", "steps", "status"],
+  "properties": {
+    "run_id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "workflow": { "enum": ["add-exchange", "fix-bug"] },
+    "inputs": { "type": "object" },
+    "steps": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Step" }
+    },
+    "human_gates": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Gate" }
+    },
+    "retry_count": {
+      "type": "object",
+      "additionalProperties": { "type": "integer" }
+    },
+    "status": { "enum": ["in_progress", "awaiting_human", "succeeded", "failed"] },
+    "result_summary": { "type": "string" }
+  },
+  "$defs": {
+    "Step": {
+      "type": "object",
+      "required": ["agent", "started_at", "status"],
+      "properties": {
+        "agent": { "type": "string" },
+        "started_at": { "type": "string", "format": "date-time" },
+        "ended_at": { "type": "string", "format": "date-time" },
+        "status": { "enum": ["ok", "fail"] },
+        "inputs_digest": {
+          "type": "object",
+          "description": "Что сабагент УВИДЕЛ. Пути файлов, которые он читал.",
+          "properties": {
+            "files_read": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "outputs": {
+          "type": "object",
+          "description": "Структурированные выходы — то, что сабагент вернул оркестратору. Никакой свободной prose-логики — она живёт в trace.jsonl.",
+          "properties": {
+            "files_written": { "type": "array", "items": { "type": "string" } },
+            "diff_summary": { "type": "string", "maxLength": 600 },
+            "claims": {
+              "type": "array",
+              "description": "Верифицируемые утверждения вида '{file}:{line} maps to {ground-truth-json-pointer}'. Critic-агент проверяет их.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "claim": { "type": "string" },
+                  "evidence_path": { "type": "string" },
+                  "evidence_pointer": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "validators": {
+          "type": "object",
+          "description": "Только механические сигналы. LLM-вердикты от critic-а живут отдельно — в critic_verdict.",
+          "properties": {
+            "dotnet_build": { "enum": ["pass", "fail", "skipped"] },
+            "dotnet_test": { "enum": ["pass", "fail", "skipped"] },
+            "schema_match": { "enum": ["pass", "fail", "skipped"] },
+            "json_pointer_resolution": { "enum": ["pass", "fail", "skipped"] },
+            "build_log_path": { "type": "string" },
+            "test_log_path": { "type": "string" }
+          }
+        },
+        "critic_verdict": {
+          "type": "object",
+          "properties": {
+            "verdict": { "enum": ["approve", "request_changes"] },
+            "issues": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["severity", "claim_index", "reason"],
+                "properties": {
+                  "severity": { "enum": ["block", "warn"] },
+                  "claim_index": { "type": "integer" },
+                  "agent": { "type": "string" },
+                  "reason": { "type": "string" },
+                  "cited_file": { "type": "string" },
+                  "cited_line": { "type": "integer" }
+                }
+              }
+            },
+            "structural_checks": {
+              "type": "object",
+              "description": "Дешёвые механические линты, которые critic делает помимо LLM-проверки claim-ов.",
+              "properties": {
+                "models_property_grounded": { "enum": ["pass", "fail"] },
+                "collector_uses_own_http_client_name": { "enum": ["pass", "fail"] },
+                "parser_returns_correct_exchange": { "enum": ["pass", "fail"] },
+                "di_triple_registered": { "enum": ["pass", "fail"] }
+              }
+            }
+          }
+        },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "latency_ms": { "type": "integer" },
+            "tool_calls": { "type": "integer" }
+          }
+        },
+        "error": { "type": "string" }
+      }
+    },
+    "Gate": {
+      "type": "object",
+      "required": ["after_step", "decision"],
+      "properties": {
+        "after_step": { "type": "integer", "description": "Индекс в массив steps[]." },
+        "decision": { "enum": ["approved", "rejected"] },
+        "by": { "type": "string" },
+        "comment": { "type": "string" },
+        "at": { "type": "string", "format": "date-time" }
+      }
+    }
+  }
+}
