@@ -7,4 +7,5 @@ public enum Exchange
     Upbit = 3,
     Bithumb = 4,
     Okx = 5,
+    Gate = 6,
 }
